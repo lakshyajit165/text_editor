@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Rich text editor in JS</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+		<script src="https://use.fontawesome.com/aac5c45839.js"></script>
+	</head>
+	<style>
+	  .container{
+	     margin:20px auto;
+		 text-align:center;
+	  }
+	  #text{
+	     height:500px;
+		 width:100%;
+		 margin:20px auto 0px auto;
+	  }
+	  #head_div{
+	    text-align:center;
+	  }
+	  .btn-primary,.adjust{
+	    float:left;
+		margin:5px;
+		
+	  }
+	  .btn_center{
+	    text-align:center;
+	  }
+	</style>
+	<body onload="enableEditMode();">
+	  <div class="container">
+	    <div class="alert alert-warning" id="head_div" role="alert">
+		  <h1>Check out my new Text Editor!</h1>
+		</div>
+
+		<div class="btn-group" role="group">
+		  <div class="container">
+             <div class="container btn_center">		   
+				<button type="button" class="btn btn-primary" onclick="execCmd('bold');"><i class="fa fa-bold"></i></button>
+				<button type="button" class="btn btn-primary"onclick="execCmd('italic');"><i class="fa fa-italic"></i></button>
+				<button type="button" class="btn btn-primary"onclick="execCmd('underline');"><i class="fa fa-underline"></i></button>
+				<button type="button" class="btn btn-primary"onclick="execCmd('strikeThrough');"><i class="fa fa-strikethrough"></i></button>
+				<button type="button" class="btn btn-primary"onclick="execCmd('justifyLeft');"><i class="fa fa-align-left"></i></button>
+				<button type="button" class="btn btn-primary"onclick="execCmd('justifyCenter');"><i class="fa fa-align-center"></i></button>
+				<button type="button" class="btn btn-primary"onclick="execCmd('justifyRight');"><i class="fa fa-align-right"></i></button>
+				<button type="button" class="btn btn-primary"onclick="execCmd('justifyFull');"><i class="fa fa-align-justify"></i></button>
+				
+				<button type="button" class="btn btn-primary"onclick="execCmd('indent');"><i class="fa fa-indent"></i></button>
+				<button type="button" class="btn btn-primary"onclick="execCmd('outdent');"><i class="fa fa-dedent"></i></button>
+				<button type="button" class="btn btn-primary"onclick="execCmd('subscript');"><i class="fa fa-subscript"></i></button>
+				<button type="button" class="btn btn-primary"onclick="execCmd('superscript');"><i class="fa fa-superscript"></i></button>
+				<button type="button" class="btn btn-primary"onclick="execCmd('undo');"><i class="fa fa-undo"></i></button>
+				<button type="button" class="btn btn-primary"onclick="execCmd('redo');"><i class="fa fa-repeat"></i></button>
+		   	 </div>
+             <div class="container btn_center">			 
+			<button type="button" class="btn btn-primary"onclick="execCmd('insertUnorderedList');"><i class="fa fa-list-ul"></i></button>
+			<button type="button" class="btn btn-primary"onclick="execCmd('insertOrderedList');"><i class="fa fa-list-ol"></i></button>
+			
+			<select class="adjust" onchange="execCommandWithArg('formatBlock', this.value);" style="height:36px;border-radius:4px;">
+				<option value="H1">H1</option>
+				<option value="H2">H2</option>
+				<option value="H3">H3</option>
+				<option value="H4">H4</option>
+				<option value="H5">H5</option>
+				<option value="H6">H6</option>
+			</select>
+			<button type="button" class="btn btn-primary"onclick="execCmd('insertHorizontalRule');">HR</button>
+			<button type="button" class="btn btn-primary"onclick="execCommandWithArg('createLink', prompt('Enter a URL', 'http://'));"><i class="fa fa-link"></i></button>
+			<button type="button" class="btn btn-primary"onclick="execCmd('unlink');"><i class="fa fa-unlink"></i></button>
+			<button type="button" class="btn btn-primary"onclick="toggleSource();"><i class="fa fa-code"></i></button>
+			<button type="button" class="btn btn-primary"onclick="toggleEdit();">Toggle Edit</button>
+			
+			<select class="adjust" onchange="execCommandWithArg('fontName', this.value);" style="height:36px;border-radius:4px;">
+				<option value="Arial">Arial</option>
+				<option value="Comic Sans MS">Comic Sans MS</option>
+				<option value="Courier">Courier</option>
+				<option value="Georgia">Georgia</option>
+				<option value="Tahoma">Tahoma</option>
+				<option value="Times New Roman" selected>Times New Roman</option>
+				<option value="Verdana">Verdana</option>
+			</select>
+			<select class="adjust" onchange="execCommandWithArg('fontSize', this.value);" style="height:36px;border-radius:4px;">
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="3">3</option>
+				<option value="4">4</option>
+				<option value="5">5</option>
+				<option value="6">6</option>
+				<option value="7">7</option>
+			</select>
+			
+			<button type="button" class="btn btn-primary"onclick="execCmd('selectAll');">Select All</button>
+		   </div>	
+		  </div>		  
+		</div>
+		<iframe name="richTextField" id="text"></iframe>
+	  </div>	
+		<script type="text/javascript">
+
+			var showingSourceCode = false;
+			var isInEditMode = true;
+
+			function enableEditMode () {
+				richTextField.document.designMode = 'On';
+			}
+
+			function execCmd (command) {
+				richTextField.document.execCommand(command, false, null);
+			}
+
+			function execCommandWithArg (command, arg) {
+				richTextField.document.execCommand(command, false, arg);
+			}
+
+			function toggleSource () {
+				if(showingSourceCode){
+					richTextField.document.getElementsByTagName('body')[0].innerHTML = richTextField.document.getElementsByTagName('body')[0].textContent;
+					showingSourceCode = false;
+				}else{
+					richTextField.document.getElementsByTagName('body')[0].textContent = richTextField.document.getElementsByTagName('body')[0].innerHTML;
+					showingSourceCode = true;
+				}
+			}
+
+			function toggleEdit () {
+				if(isInEditMode){
+					richTextField.document.designMode = 'Off';
+					isInEditMode = false;
+				}else{
+					richTextField.document.designMode = 'On';
+					isInEditMode = true;
+				}
+			}
+
+		</script>
+	</body>
+</html>
